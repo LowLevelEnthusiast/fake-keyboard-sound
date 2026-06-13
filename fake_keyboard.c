@@ -73,7 +73,7 @@ int open_keyboard(void) {
     exit(1);
   }
   struct dirent *content;
-  int keyboard, temp_fd;
+  int temp_fd;
   int i = 0;
   while ((content = readdir(dir)) != NULL) {
     strcpy(variable_path, fixed_path);
@@ -246,9 +246,11 @@ void control_keyboard(int fd, Mix_Chunk **sounds) {
 }
 
 void signal_handler(int sig) {
-  line_clear_and_home();
-  Mix_CloseAudio();
-  SDL_Quit();
-  printf("\nCleaning up......\n");
-  exit(0);
+  if (sig == SIGINT) {
+    line_clear_and_home();
+    Mix_CloseAudio();
+    SDL_Quit();
+    printf("\nCleaning up......\n");
+    exit(0);
+  }
 }
