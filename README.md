@@ -1,9 +1,21 @@
-
 # Fake Keyboard Sound
 
-A Linux utility that simulates mechanical keyboard sounds by playing audio samples in response to keyboard input events.
+Turn any keyboard into a mechanical keyboard.
+
+🎥 **Demo Video:**
+<https://youtu.be/lR300eIlz8g?t=22>
+
+This Linux utility simulates mechanical keyboard sounds by playing audio samples in response to keyboard input events.
 
 The program reads keyboard events directly from the Linux input subsystem and plays corresponding WAV files using SDL2 and SDL2_mixer, allowing any keyboard to mimic the sound profile of a mechanical keyboard.
+
+## Why?
+
+Mechanical keyboards sound great.
+
+Mine wasn't mechanical.
+
+So I wrote a program that listens for key presses and plays mechanical keyboard sound effects in real time, making a cheap keyboard sound far more expensive than it actually is.
 
 ## Features
 
@@ -13,8 +25,25 @@ The program reads keyboard events directly from the Linux input subsystem and pl
 * Automatic fallback for unmapped keys
 * Low-latency audio playback using SDL2_mixer
 * Drops elevated privileges after opening the selected input device
+* Lightweight native implementation in C
 
 ## How It Works
+
+```text
+Keyboard
+    │
+    ▼
+Linux Input Events
+    │
+    ▼
+fake_keyboard
+    │
+    ▼
+SDL2_mixer
+    │
+    ▼
+Mechanical Keyboard Sounds
+```
 
 Accessing devices under `/dev/input` requires elevated privileges. The program starts with root permissions in order to enumerate and open keyboard devices.
 
@@ -28,6 +57,12 @@ After a keyboard is selected:
 6. Matching audio samples are played whenever keys are pressed.
 
 The privilege drop ensures that only the device discovery phase requires elevated access.
+
+## Security
+
+The application only uses elevated privileges to discover and open input devices.
+
+Once the selected keyboard has been opened, root privileges are immediately dropped and the remainder of the application runs as the invoking user.
 
 ## Dependencies
 
@@ -80,7 +115,7 @@ backspace.wav
 shift.wav
 ```
 
-When a dedicated sample for a key is unavailable, the program selects a fallback sound from the loaded sound pack.
+When a dedicated sample for a key is unavailable, the program automatically selects a fallback sound from the loaded sound pack.
 
 ## Project Structure
 
